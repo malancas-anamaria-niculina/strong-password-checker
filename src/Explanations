@@ -1,0 +1,55 @@
+A password is considered strong if below conditions are all met:
+1. It has at least 6 characters and at most 20 characters.
+2. It must contain at least one lowercase letter, at least one uppercase letter, and at least one
+digit.
+3. It must NOT contain three repeating characters in a row ("...aaa..." is weak, but "...aa...a..."
+is strong, assuming other conditions are met).
+Write an algorithm that takes a string s as input, and return the MINIMUM change required to
+make s a strong password. If s is already strong, return 0.
+Insertion, deletion or replace of any one character are all considered as one change.
+
+Principle of the solving:
+in order to make minimum changes to turn s into a strong password, the algorithm should fix as many problems as
+possible in one change.
+
+Possible problems found in a string s:
+1: Length of the string:
+- if the length of the string is less than 6, the problems can be resolved with insertion, and in the worst case, if the
+string consists only of repeating characters the problems will be resolved with insertion and replace
+- if the length of the string is greater than 20, the problems can be resolved with deletion. If after deletions, the
+password doesn't respect all the conditions, the problems will be resolved with deletions and replacements.
+
+2: The password doesn't contain at least lowercase, uppercase, and one digit:
+- if the length of the string is less than 6 and the string isn't in the worst case when all characters are equals, it
+can be considered that in insertion is inserted one of the missing characters. Also, it is possible at one time to miss
+maxim two required type of characters, and this means that is necessary to replace characters only when the length is 5
+- if the length of the string is greater or equal to 6 and less or equal to 20, the needed operations are only
+replacements
+
+3: The case when in string exist repeating characters
+- for length less than 5, the single changes that need to be made are only the insertion (insert 6-password_length
+characters), for length = 5 repeating characters or 5 characters who are the same type, is needed one insertion
+(6 - password_length) and one replacement (uppercaseLetter + lowercaseLetter + digit - password_length(in the presented
+worst case only one letter is remaining))
+- for length greater or equal to 6, the only possible operations are deletions and replacement. In this case,
+deletions and replacements are needed to be made to eliminate as many problems as can. This is the hardest
+part of the problem.
+
+In that part, the program needs to find what types of characters are missed in the string, the number of replacements,
+and the number of deletion that can be made to the string. The insertion in this is case can cause more changes than the
+minimum. The minimum changes are given by the maximum characters that can be replaced, after deleting the required
+number of characters.
+
+To resolve this step, the length of the repeating sequences need to reduce, so there can be three cases:
+1. repeating substring is multiple of 3 (3*n), example: "bbb", to modify this string, it is possible to delete one
+character or replace a character.
+2. repeating substring is multiple of 4 (3*n+1), example: "bbbb", to modify this string, it is possible to delete two
+characters or replace a character (in this case the third character).
+3. repeating substring is multiple of 5 (3*n+2), example: "bbbbb", to modify this is, it is possible to delete three
+characters or to replace one character (in this case the character in the middle).
+
+After that examination, we can see that, even when we delete one, two, or three characters, the number of replaced
+characters associated is 1. In that case, if we want to extract the minimum number of replacements after deletion, we
+should divide the remaining characters after deletions by 2 (for the 3*n+1 cases) or by 3 (for the 3*n+2 cases). After
+we do that, if the string still has lowercase, uppecase or digits missing characters, and we need more replacements
+than we have, the number of the replacements will increase.
